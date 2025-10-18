@@ -168,6 +168,7 @@ export interface Level {
   name: LevelName;
   minPoints: number;
   maxPoints: number;
+  color?: string;
 }
 
 // GTFS Types

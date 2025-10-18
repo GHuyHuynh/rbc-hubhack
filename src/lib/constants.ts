@@ -16,11 +16,11 @@ export const POINTS = {
 
 // Level Configuration
 export const LEVELS: Record<LevelName, Level> = {
-  'Beginner': { name: 'Beginner', minPoints: 0, maxPoints: 499 },
-  'Helper': { name: 'Helper', minPoints: 500, maxPoints: 999 },
-  'Hero': { name: 'Hero', minPoints: 1000, maxPoints: 2499 },
-  'Super Hero': { name: 'Super Hero', minPoints: 2500, maxPoints: 4999 },
-  'Champion': { name: 'Champion', minPoints: 5000, maxPoints: Infinity },
+  'Beginner': { name: 'Beginner', minPoints: 0, maxPoints: 499, color: '#6B7280' },
+  'Helper': { name: 'Helper', minPoints: 500, maxPoints: 999, color: '#3B82F6' },
+  'Hero': { name: 'Hero', minPoints: 1000, maxPoints: 2499, color: '#10B981' },
+  'Super Hero': { name: 'Super Hero', minPoints: 2500, maxPoints: 4999, color: '#8B5CF6' },
+  'Champion': { name: 'Champion', minPoints: 5000, maxPoints: Infinity, color: '#F59E0B' },
 };
 
 export const LEVEL_ORDER: LevelName[] = [

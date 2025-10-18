@@ -64,6 +64,20 @@ export function getUserByEmail(email: string): User | null {
   return users.find((u) => u.email.toLowerCase() === email.toLowerCase()) || null;
 }
 
+export function getTopHeroes(limit: number = 10): Hero[] {
+  const users = getAllUsers();
+  const heroes = users.filter(isHero);
+
+  // Sort by points (descending), then by total deliveries, then by level
+  return heroes
+    .sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.totalDeliveries !== a.totalDeliveries) return b.totalDeliveries - a.totalDeliveries;
+      return b.level - a.level;
+    })
+    .slice(0, limit);
+}
+
 export function createUser(userData: Omit<User, 'id' | 'createdAt'>): User {
   const users = getAllUsers();
 

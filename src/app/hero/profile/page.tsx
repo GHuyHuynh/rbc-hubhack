@@ -88,6 +88,29 @@ export default function HeroProfilePage() {
       </div>
 
       <div className="container mx-auto max-w-screen-xl p-4 space-y-6">
+        {/* Leaderboard Quick Link */}
+        <Card
+          className="bg-gradient-to-br from-yellow-50 to-amber-50 border-yellow-200 cursor-pointer hover:shadow-lg transition-all duration-200"
+          onClick={() => router.push('/hero/leaderboard')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 p-3 rounded-full">
+                  <Trophy className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900">View Leaderboard</h3>
+                  <p className="text-sm text-gray-600">See how you rank among heroes</p>
+                </div>
+              </div>
+              <Button variant="ghost" size="sm" className="text-yellow-700">
+                View →
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Stats */}
         <Card>
           <CardHeader>

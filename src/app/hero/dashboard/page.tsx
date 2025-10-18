@@ -3,17 +3,18 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Package, MapPin, TrendingUp, Award, LogOut } from 'lucide-react';
+import { Package, MapPin, TrendingUp, Award, LogOut, Trophy, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BottomNav } from '@/components/shared/BottomNav';
 import { PointsBadge } from '@/components/shared/PointsBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
+import { ContactButton } from '@/components/hero/ContactButton';
 import { useAuthStore, useHero } from '@/store/authStore';
-import { getActiveRequestsForHero, getPendingRequests, getAllRequests } from '@/lib/localStorage';
+import { getActiveRequestsForHero, getPendingRequests, getAllRequests, getUserById } from '@/lib/localStorage';
 import { getLevelInfo } from '@/lib/gamification';
-import { BADGES } from '@/lib/constants';
-import type { FoodRequest } from '@/lib/types';
+import { BADGES, FOOD_TYPE_LABELS, QUANTITY_LABELS } from '@/lib/constants';
+import type { FoodRequest, Requester } from '@/lib/types';
 import { format } from 'date-fns';
 
 export default function HeroDashboardPage() {
@@ -146,6 +147,73 @@ export default function HeroDashboardPage() {
           </Card>
         </div>
 
+        {/* Active Deliveries */}
+        {activeRequests.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Package className="h-5 w-5 text-primary" />
+                Your Active Deliveries
+              </CardTitle>
+              <CardDescription>
+                Keep your requesters updated on your progress
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {activeRequests.map((request) => {
+                const requester = getUserById(request.requesterId) as Requester;
+                return (
+                  <div
+                    key={request.id}
+                    className="p-4 bg-muted/50 rounded-lg border border-border space-y-3"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-semibold mb-1">
+                          {FOOD_TYPE_LABELS[request.foodType]}
+                        </div>
+                        <div className="text-sm text-muted-foreground mb-2">
+                          {QUANTITY_LABELS[request.quantity]}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span>
+                            {format(new Date(request.preferredTimeStart), 'MMM d, h:mm a')}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                          <MapPin className="h-3 w-3" />
+                          <span className="line-clamp-1">{request.deliveryAddress}</span>
+                        </div>
+                      </div>
+                      <StatusBadge status={request.status} />
+                    </div>
+
+                    <div className="flex gap-2">
+                      {requester && (
+                        <ContactButton
+                          userId={hero.id}
+                          contactName={requester.name}
+                          contactPhone={requester.phone}
+                          requestId={request.id}
+                          variant="outline"
+                          size="sm"
+                          fullWidth
+                        />
+                      )}
+                      <Button asChild variant="secondary" size="sm" className="flex-1">
+                        <Link href={`/hero/requests/${request.id}`}>
+                          View Details
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Quick Actions */}
         <Card>
           <CardHeader>
@@ -161,6 +229,20 @@ export default function HeroDashboardPage() {
                   <div className="text-left">
                     <div className="font-semibold">Browse Requests</div>
                     <div className="text-xs opacity-90">{pendingCount} people need help</div>
+                  </div>
+                </div>
+              </Link>
+            </Button>
+
+            <Button asChild variant="outline" className="w-full justify-start h-auto p-4">
+              <Link href="/hero/leaderboard">
+                <div className="flex items-center gap-3">
+                  <div className="bg-yellow-100 p-2 rounded-lg">
+                    <Trophy className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold">View Leaderboard</div>
+                    <div className="text-xs text-muted-foreground">See how you rank</div>
                   </div>
                 </div>
               </Link>

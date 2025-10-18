@@ -9,11 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BottomNav } from '@/components/shared/BottomNav';
 import { StatusBadge } from '@/components/shared/StatusBadge';
+import { ContactButton } from '@/components/hero/ContactButton';
 import { useHero } from '@/store/authStore';
-import { getRequestById, acceptRequest, getActiveRequestsForHero, markRequestInProgress, completeRequest } from '@/lib/localStorage';
+import { getRequestById, acceptRequest, getActiveRequestsForHero, markRequestInProgress, completeRequest, getUserById } from '@/lib/localStorage';
 import { FOOD_TYPE_LABELS, QUANTITY_LABELS } from '@/lib/constants';
 import { awardPoints, determineBonuses, checkAndAwardBadges } from '@/lib/gamification';
-import type { FoodRequest } from '@/lib/types';
+import type { FoodRequest, Requester } from '@/lib/types';
 import { calculateDistance, formatDistance } from '@/lib/utils';
 import { format } from 'date-fns';
 import foodBanksData from '@/data/foodBanks.json';
@@ -23,6 +24,7 @@ export default function RequestDetailPage() {
   const params = useParams();
   const hero = useHero();
   const [request, setRequest] = useState<FoodRequest | null>(null);
+  const [requester, setRequester] = useState<Requester | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +46,10 @@ export default function RequestDetailPage() {
       return;
     }
     setRequest(req);
+
+    // Load requester info
+    const reqUser = getUserById(req.requesterId) as Requester;
+    setRequester(reqUser);
   };
 
   if (!hero || !request) {
@@ -259,24 +265,50 @@ export default function RequestDetailPage() {
         )}
 
         {canMarkInProgress && (
-          <Button
-            className="w-full h-14 text-lg"
-            onClick={handleMarkInProgress}
-            variant="secondary"
-          >
-            <Package className="h-5 w-5 mr-2" />
-            Mark as In Progress
-          </Button>
+          <>
+            <Button
+              className="w-full h-14 text-lg"
+              onClick={handleMarkInProgress}
+              variant="secondary"
+            >
+              <Package className="h-5 w-5 mr-2" />
+              Mark as In Progress
+            </Button>
+            {requester && (
+              <ContactButton
+                userId={hero.id}
+                contactName={requester.name}
+                contactPhone={requester.phone}
+                requestId={requestId}
+                variant="outline"
+                size="lg"
+                fullWidth
+              />
+            )}
+          </>
         )}
 
         {canComplete && (
-          <Button
-            className="w-full h-14 text-lg"
-            onClick={handleCompleteDelivery}
-          >
-            <CheckCircle className="h-5 w-5 mr-2" />
-            Complete Delivery
-          </Button>
+          <>
+            {requester && (
+              <ContactButton
+                userId={hero.id}
+                contactName={requester.name}
+                contactPhone={requester.phone}
+                requestId={requestId}
+                variant="outline"
+                size="lg"
+                fullWidth
+              />
+            )}
+            <Button
+              className="w-full h-14 text-lg"
+              onClick={handleCompleteDelivery}
+            >
+              <CheckCircle className="h-5 w-5 mr-2" />
+              Complete Delivery
+            </Button>
+          </>
         )}
 
         {!isMyRequest && !canAccept && request.status !== 'pending' && (

@@ -232,8 +232,8 @@ export default function HeroMapPage() {
           </div>
         )}
 
-        {/* Map Container */}
-        <div className="flex-1 min-h-[400px]">
+        {/* Map Container with enhanced styling */}
+        <div className="flex-1 min-h-[400px] rounded-xl overflow-hidden shadow-lg border-2 border-gray-200">
           <InteractiveMap
             key={mapKey}
             center={[HALIFAX_CENTER.lat, HALIFAX_CENTER.lng]}

@@ -9,51 +9,93 @@ import { RequestPopup } from './RequestPopup';
 import { calculateDistance } from '@/lib/utils';
 import { fetchVehiclePositions, type BusPosition } from '@/lib/gtfsRealtimeService';
 
-// Pokemon Go style markers - large and prominent
+// Modern, glass-morphism style markers - elegant and eye-catching
 const createCustomIcon = (color: string, emoji: string, pulseColor: string) => {
   return L.divIcon({
     html: `
-      <div style="position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+      <div style="position: relative; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+        <!-- Outer glow -->
+        <div style="
+          position: absolute;
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          background: radial-gradient(circle, ${pulseColor}88 0%, transparent 70%);
+          filter: blur(8px);
+          animation: glow 3s ease-in-out infinite;
+        "></div>
         <!-- Pulse ring animation -->
         <div style="
           position: absolute;
-          width: 60px;
-          height: 60px;
+          width: 64px;
+          height: 64px;
           border-radius: 50%;
-          background-color: ${pulseColor};
-          opacity: 0.3;
-          animation: pulse 2s infinite;
+          border: 3px solid ${pulseColor};
+          opacity: 0.4;
+          animation: pulse 2.5s ease-out infinite;
         "></div>
-        <!-- Main marker circle -->
+        <!-- Secondary pulse -->
+        <div style="
+          position: absolute;
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          border: 2px solid ${pulseColor};
+          opacity: 0.3;
+          animation: pulse 2.5s ease-out 0.5s infinite;
+        "></div>
+        <!-- Main marker circle with glass effect -->
         <div style="
           position: relative;
-          background: linear-gradient(135deg, ${color} 0%, ${color}dd 100%);
-          width: 48px;
-          height: 48px;
+          background: linear-gradient(145deg, ${color}f0 0%, ${color}cc 100%);
+          backdrop-filter: blur(10px);
+          width: 52px;
+          height: 52px;
           border-radius: 50%;
-          border: 4px solid white;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 0 0 2px ${color}44;
+          border: 3px solid white;
+          box-shadow:
+            0 8px 32px rgba(0,0,0,0.25),
+            0 2px 8px rgba(0,0,0,0.15),
+            inset 0 -2px 8px rgba(0,0,0,0.1),
+            inset 0 2px 8px rgba(255,255,255,0.3);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 24px;
+          font-size: 26px;
           cursor: pointer;
-          transition: transform 0.2s;
-        " onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        "
+        onmouseover="this.style.transform='scale(1.2) translateY(-2px)'; this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.2)'"
+        onmouseout="this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15)'">
           ${emoji}
+          <!-- Shine effect -->
+          <div style="
+            position: absolute;
+            top: 3px;
+            left: 8px;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+          "></div>
         </div>
       </div>
       <style>
         @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 0.3; }
-          50% { transform: scale(1.3); opacity: 0.1; }
+          0% { transform: scale(1); opacity: 0.4; }
+          100% { transform: scale(1.4); opacity: 0; }
+        }
+        @keyframes glow {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 0.9; }
         }
       </style>
     `,
-    className: 'custom-marker-pogo',
-    iconSize: [60, 60],
-    iconAnchor: [30, 30],
-    popupAnchor: [0, -30],
+    className: 'custom-marker-modern',
+    iconSize: [70, 70],
+    iconAnchor: [35, 35],
+    popupAnchor: [0, -35],
   });
 };
 
@@ -134,43 +176,87 @@ const createEndIcon = () => {
   });
 };
 
-// Bus icon with direction arrow - Pokemon Go style
+// Bus icon with direction arrow - modern animated style
 const createBusIcon = (bearing?: number) => {
   const rotation = bearing !== undefined ? `rotate(${bearing}deg)` : '';
   return L.divIcon({
     html: `
-      <div style="position: relative; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-        <!-- Pulse for buses -->
+      <div style="position: relative; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+        <!-- Animated pulse rings -->
         <div style="
           position: absolute;
-          width: 50px;
-          height: 50px;
-          border-radius: 8px;
-          background-color: #3B82F6;
-          opacity: 0.2;
-          animation: pulse 1.5s infinite;
+          width: 56px;
+          height: 56px;
+          border-radius: 10px;
+          border: 2px solid #3B82F6;
+          opacity: 0.4;
+          animation: squarePulse 2s ease-out infinite;
+        "></div>
+        <div style="
+          position: absolute;
+          width: 56px;
+          height: 56px;
+          border-radius: 10px;
+          border: 2px solid #60A5FA;
+          opacity: 0.3;
+          animation: squarePulse 2s ease-out 0.5s infinite;
+        "></div>
+        <!-- Glow effect -->
+        <div style="
+          position: absolute;
+          width: 56px;
+          height: 56px;
+          border-radius: 10px;
+          background: radial-gradient(circle, #3B82F688 0%, transparent 70%);
+          filter: blur(6px);
+          animation: glow 2s ease-in-out infinite;
         "></div>
         <!-- Main bus marker -->
         <div style="
           transform: ${rotation};
           position: relative;
-          background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-          width: 40px;
-          height: 40px;
-          border-radius: 8px;
+          background: linear-gradient(145deg, #3B82F6f0 0%, #2563EBdd 100%);
+          backdrop-filter: blur(10px);
+          width: 44px;
+          height: 44px;
+          border-radius: 10px;
           border: 3px solid white;
-          box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+          box-shadow:
+            0 6px 24px rgba(59,130,246,0.4),
+            0 2px 8px rgba(0,0,0,0.2),
+            inset 0 -2px 6px rgba(0,0,0,0.15),
+            inset 0 2px 6px rgba(255,255,255,0.4);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 20px;
-        ">🚌</div>
+          font-size: 22px;
+          transition: all 0.3s ease;
+        " onmouseover="this.style.transform='${rotation} scale(1.15)'" onmouseout="this.style.transform='${rotation} scale(1)'">
+          🚌
+          <!-- Shine -->
+          <div style="
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            width: 14px;
+            height: 14px;
+            background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+          "></div>
+        </div>
       </div>
+      <style>
+        @keyframes squarePulse {
+          0% { transform: scale(1); opacity: 0.4; }
+          100% { transform: scale(1.3); opacity: 0; }
+        }
+      </style>
     `,
-    className: 'bus-marker-pogo',
-    iconSize: [50, 50],
-    iconAnchor: [25, 25],
-    popupAnchor: [0, -25],
+    className: 'bus-marker-modern',
+    iconSize: [56, 56],
+    iconAnchor: [28, 28],
+    popupAnchor: [0, -28],
   });
 };
 
@@ -290,58 +376,90 @@ export function InteractiveMap({
     >
       <ChangeView center={center} zoom={zoom} />
 
+      {/* Modern CartoDB Voyager tile layer - clean and aesthetic */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        subdomains="abcd"
+        maxZoom={20}
       />
 
-      {/* Route Lines - Food Bank to Delivery */}
+      {/* Route Lines - Food Bank to Delivery with enhanced styling */}
       {showRoutes && routes.map((route: any, idx) => {
         // Active routes (accepted/in_progress) get solid line, pending get dashed
         const isActive = route.isActive;
         const routeColor = isActive ? '#10B981' : '#3B82F6';
-        const routeWeight = isActive ? 5 : 3;
-        const routeOpacity = isActive ? 0.9 : 0.6;
-        const dashArray = isActive ? undefined : '10, 10';
+        const routeWeight = isActive ? 6 : 4;
+        const routeOpacity = isActive ? 0.95 : 0.7;
+        const dashArray = isActive ? undefined : '15, 10';
 
         return (
           <React.Fragment key={`route-${idx}`}>
+            {/* Shadow/glow layer */}
+            <Polyline
+              positions={route.positions}
+              pathOptions={{
+                color: routeColor,
+                weight: routeWeight + 8,
+                opacity: 0.15,
+                lineCap: 'round',
+                lineJoin: 'round'
+              }}
+            />
+
+            {/* Main route line */}
             <Polyline
               positions={route.positions}
               pathOptions={{
                 color: routeColor,
                 weight: routeWeight,
                 opacity: routeOpacity,
-                dashArray: dashArray
+                dashArray: dashArray,
+                lineCap: 'round',
+                lineJoin: 'round'
               }}
             />
 
-            {/* Add directional arrows for active routes */}
+            {/* Animated flow effect for active routes */}
             {isActive && (
               <Polyline
                 positions={route.positions}
                 pathOptions={{
-                  color: routeColor,
-                  weight: routeWeight,
-                  opacity: 0.5,
-                  dashArray: '0, 30, 15, 30'
+                  color: '#ffffff',
+                  weight: 2,
+                  opacity: 0.8,
+                  dashArray: '0, 20, 12, 20',
+                  lineCap: 'round'
                 }}
               />
             )}
 
-            {/* Distance circles around food bank for active routes */}
+            {/* Enhanced distance circles around food bank for active routes */}
             {isActive && (
-              <Circle
-                center={route.positions[0]}
-                radius={500}
-                pathOptions={{
-                  color: '#10B981',
-                  fillColor: '#10B981',
-                  fillOpacity: 0.15,
-                  weight: 2,
-                  dashArray: '5, 5'
-                }}
-              />
+              <>
+                <Circle
+                  center={route.positions[0]}
+                  radius={700}
+                  pathOptions={{
+                    color: '#10B981',
+                    fillColor: '#10B981',
+                    fillOpacity: 0.08,
+                    weight: 0
+                  }}
+                />
+                <Circle
+                  center={route.positions[0]}
+                  radius={500}
+                  pathOptions={{
+                    color: '#10B981',
+                    fillColor: '#10B981',
+                    fillOpacity: 0.12,
+                    weight: 2,
+                    opacity: 0.4,
+                    dashArray: '8, 6'
+                  }}
+                />
+              </>
             )}
 
             {/* Start and End waypoint markers for active routes */}
@@ -353,16 +471,23 @@ export function InteractiveMap({
                   zIndexOffset={1000}
                 >
                   <Popup>
-                    <div className="min-w-[180px]">
-                      <h3 className="font-semibold text-sm mb-1 flex items-center gap-1">
-                        🏁 Start: {route.bank.name}
-                      </h3>
-                      <p className="text-xs text-gray-600 mb-1">
-                        Pick up food items here
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {route.bank.address}
-                      </p>
+                    <div className="min-w-[220px] p-0">
+                      <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-2.5 rounded-t-lg">
+                        <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                          🏁 Start Point
+                        </h3>
+                      </div>
+                      <div className="p-2.5 bg-white rounded-b-lg">
+                        <p className="font-semibold text-sm text-gray-800 mb-1.5">
+                          {route.bank.name}
+                        </p>
+                        <p className="text-xs text-emerald-600 font-medium mb-2 bg-emerald-50 px-2 py-1 rounded">
+                          📦 Pick up food items here
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          📍 {route.bank.address}
+                        </p>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
@@ -372,16 +497,28 @@ export function InteractiveMap({
                   zIndexOffset={1000}
                 >
                   <Popup>
-                    <div className="min-w-[180px]">
-                      <h3 className="font-semibold text-sm mb-1 flex items-center gap-1">
-                        🎯 Destination
-                      </h3>
-                      <p className="text-xs text-gray-600 mb-1">
-                        Deliver to {route.request.deliveryAddress.split(',')[0]}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {FOOD_TYPE_LABELS[route.request.foodType as FoodType]} • {QUANTITY_LABELS[route.request.quantity as Quantity]}
-                      </p>
+                    <div className="min-w-[220px] p-0">
+                      <div className="bg-gradient-to-br from-red-500 to-red-600 p-2.5 rounded-t-lg">
+                        <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                          🎯 Destination
+                        </h3>
+                      </div>
+                      <div className="p-2.5 bg-white rounded-b-lg">
+                        <p className="font-semibold text-sm text-gray-800 mb-1.5">
+                          {route.request.deliveryAddress.split(',')[0]}
+                        </p>
+                        <p className="text-xs text-red-600 font-medium mb-2 bg-red-50 px-2 py-1 rounded">
+                          🚚 Deliver here
+                        </p>
+                        <div className="flex gap-1.5 text-xs">
+                          <span className="bg-gray-100 px-2 py-0.5 rounded-full font-medium text-gray-700">
+                            {FOOD_TYPE_LABELS[route.request.foodType as FoodType]}
+                          </span>
+                          <span className="bg-gray-100 px-2 py-0.5 rounded-full font-medium text-gray-700">
+                            {QUANTITY_LABELS[route.request.quantity as Quantity]}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>
@@ -431,18 +568,24 @@ export function InteractiveMap({
           icon={foodBankIcon}
         >
           <Popup>
-            <div className="min-w-[200px]">
-              <h3 className="font-semibold mb-1">{bank.name}</h3>
-              <p className="text-xs text-gray-600 mb-2">{bank.address}</p>
-              <p className="text-xs text-gray-500 mb-1">
-                📞 {bank.phone}
-              </p>
-              <a
-                href={`tel:${bank.phone}`}
-                className="text-xs text-blue-600 hover:underline block"
-              >
-                Call Now
-              </a>
+            <div className="min-w-[240px] p-0">
+              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-2.5 rounded-t-lg">
+                <h3 className="font-bold text-sm text-white">🏪 {bank.name}</h3>
+              </div>
+              <div className="p-2.5 bg-white rounded-b-lg space-y-2">
+                <p className="text-xs text-gray-600 flex items-start gap-1.5">
+                  <span>📍</span>
+                  <span>{bank.address}</span>
+                </p>
+                <div className="flex items-center gap-2 pt-1">
+                  <a
+                    href={`tel:${bank.phone}`}
+                    className="flex-1 text-xs font-semibold text-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2 px-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    📞 Call {bank.phone}
+                  </a>
+                </div>
+              </div>
             </div>
           </Popup>
         </Marker>
@@ -456,17 +599,27 @@ export function InteractiveMap({
           icon={marketIcon}
         >
           <Popup>
-            <div className="min-w-[200px]">
-              <h3 className="font-semibold mb-1">{market.name}</h3>
-              <p className="text-xs text-gray-600 mb-2">{market.address}</p>
-              {market.seasonal && (
-                <p className="text-xs text-amber-600 mb-1">
-                  🌾 Seasonal: {market.months}
+            <div className="min-w-[240px] p-0">
+              <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-2.5 rounded-t-lg">
+                <h3 className="font-bold text-sm text-white">🌾 {market.name}</h3>
+              </div>
+              <div className="p-2.5 bg-white rounded-b-lg space-y-2">
+                <p className="text-xs text-gray-600 flex items-start gap-1.5">
+                  <span>📍</span>
+                  <span>{market.address}</span>
                 </p>
-              )}
-              <p className="text-xs text-gray-500">
-                📞 {market.phone}
-              </p>
+                {market.seasonal && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg px-2 py-1.5">
+                    <p className="text-xs text-amber-800 font-medium">
+                      🌾 Seasonal: {market.months}
+                    </p>
+                  </div>
+                )}
+                <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                  <span>📞</span>
+                  <span>{market.phone}</span>
+                </p>
+              </div>
             </div>
           </Popup>
         </Marker>
@@ -480,21 +633,31 @@ export function InteractiveMap({
           icon={createBusIcon(bus.bearing)}
         >
           <Popup>
-            <div className="min-w-[180px]">
-              <h3 className="font-semibold mb-1 flex items-center gap-1">
-                🚌 Bus {bus.label || bus.vehicleId}
-              </h3>
-              <p className="text-xs text-gray-600 mb-1">
-                Route: {bus.routeId}
-              </p>
-              {bus.speed !== undefined && (
-                <p className="text-xs text-gray-500">
-                  Speed: {Math.round(bus.speed * 3.6)} km/h
+            <div className="min-w-[220px] p-0">
+              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2.5 rounded-t-lg">
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                  🚌 Bus {bus.label || bus.vehicleId}
+                </h3>
+              </div>
+              <div className="p-2.5 bg-white rounded-b-lg space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-gray-500">Route:</span>
+                  <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full">
+                    {bus.routeId}
+                  </span>
+                </div>
+                {bus.speed !== undefined && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-gray-500">Speed:</span>
+                    <span className="text-xs text-gray-800 font-medium">
+                      {Math.round(bus.speed * 3.6)} km/h
+                    </span>
+                  </div>
+                )}
+                <p className="text-xs text-gray-400 pt-1 border-t border-gray-200">
+                  🕒 Updated: {new Date(bus.timestamp * 1000).toLocaleTimeString()}
                 </p>
-              )}
-              <p className="text-xs text-gray-400 mt-1">
-                Updated: {new Date(bus.timestamp * 1000).toLocaleTimeString()}
-              </p>
+              </div>
             </div>
           </Popup>
         </Marker>
