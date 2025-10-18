@@ -21,7 +21,8 @@ interface RequestPopupProps {
 export function RequestPopup({ request, hero, foodBanks = [], onAccepted }: RequestPopupProps) {
   const router = useRouter();
   const [isAccepting, setIsAccepting] = useState(false);
-  const [showDirections, setShowDirections] = useState(false);
+  // Auto-show directions if request is accepted or in progress
+  const [showDirections, setShowDirections] = useState(request.status === 'accepted' || request.status === 'in_progress');
   const [error, setError] = useState<string | null>(null);
 
   // Find nearest food bank

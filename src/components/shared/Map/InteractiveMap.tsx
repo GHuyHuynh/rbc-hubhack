@@ -61,6 +61,79 @@ const requestIcon = createCustomIcon('#EF4444', '🍎', '#EF4444'); // Red with 
 const foodBankIcon = createCustomIcon('#10B981', '🏪', '#10B981'); // Green with store
 const marketIcon = createCustomIcon('#F59E0B', '🌾', '#F59E0B'); // Amber with wheat
 
+// Route waypoint markers - smaller and simpler
+const createWaypointIcon = (number: number, color: string) => {
+  return L.divIcon({
+    html: `
+      <div style="
+        background: linear-gradient(135deg, ${color} 0%, ${color}dd 100%);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+      ">${number}</div>
+    `,
+    className: 'waypoint-marker',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
+  });
+};
+
+// Start and end markers for active routes
+const createStartIcon = () => {
+  return L.divIcon({
+    html: `
+      <div style="
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      ">🏁</div>
+    `,
+    className: 'start-marker',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -18],
+  });
+};
+
+const createEndIcon = () => {
+  return L.divIcon({
+    html: `
+      <div style="
+        background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      ">🎯</div>
+    `,
+    className: 'end-marker',
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -18],
+  });
+};
+
 // Bus icon with direction arrow - Pokemon Go style
 const createBusIcon = (bearing?: number) => {
   const rotation = bearing !== undefined ? `rotate(${bearing}deg)` : '';
@@ -179,7 +252,7 @@ export function InteractiveMap({
     if (!showRoutes) return [];
 
     return requests
-      .filter(r => r.status === 'pending' || (selectedRequestId && r.id === selectedRequestId))
+      .filter(r => r.status === 'pending' || r.status === 'accepted' || r.status === 'in_progress' || (selectedRequestId && r.id === selectedRequestId))
       .map(request => {
         // Find nearest food bank
         const nearestBank = foodBanks
@@ -196,7 +269,8 @@ export function InteractiveMap({
             positions: [
               [nearestBank.bank.lat, nearestBank.bank.lng] as [number, number],
               [request.deliveryLat, request.deliveryLng] as [number, number]
-            ]
+            ],
+            isActive: request.status === 'accepted' || request.status === 'in_progress'
           };
         }
         return null;
@@ -222,30 +296,100 @@ export function InteractiveMap({
       />
 
       {/* Route Lines - Food Bank to Delivery */}
-      {showRoutes && routes.map((route: any, idx) => (
-        <React.Fragment key={`route-${idx}`}>
-          <Polyline
-            positions={route.positions}
-            pathOptions={{
-              color: '#3B82F6',
-              weight: 3,
-              opacity: 0.7,
-              dashArray: '10, 10'
-            }}
-          />
-          {/* Distance circles around food bank */}
-          <Circle
-            center={route.positions[0]}
-            radius={500}
-            pathOptions={{
-              color: '#10B981',
-              fillColor: '#10B981',
-              fillOpacity: 0.1,
-              weight: 1
-            }}
-          />
-        </React.Fragment>
-      ))}
+      {showRoutes && routes.map((route: any, idx) => {
+        // Active routes (accepted/in_progress) get solid line, pending get dashed
+        const isActive = route.isActive;
+        const routeColor = isActive ? '#10B981' : '#3B82F6';
+        const routeWeight = isActive ? 5 : 3;
+        const routeOpacity = isActive ? 0.9 : 0.6;
+        const dashArray = isActive ? undefined : '10, 10';
+
+        return (
+          <React.Fragment key={`route-${idx}`}>
+            <Polyline
+              positions={route.positions}
+              pathOptions={{
+                color: routeColor,
+                weight: routeWeight,
+                opacity: routeOpacity,
+                dashArray: dashArray
+              }}
+            />
+
+            {/* Add directional arrows for active routes */}
+            {isActive && (
+              <Polyline
+                positions={route.positions}
+                pathOptions={{
+                  color: routeColor,
+                  weight: routeWeight,
+                  opacity: 0.5,
+                  dashArray: '0, 30, 15, 30'
+                }}
+              />
+            )}
+
+            {/* Distance circles around food bank for active routes */}
+            {isActive && (
+              <Circle
+                center={route.positions[0]}
+                radius={500}
+                pathOptions={{
+                  color: '#10B981',
+                  fillColor: '#10B981',
+                  fillOpacity: 0.15,
+                  weight: 2,
+                  dashArray: '5, 5'
+                }}
+              />
+            )}
+
+            {/* Start and End waypoint markers for active routes */}
+            {isActive && (
+              <>
+                <Marker
+                  position={route.positions[0]}
+                  icon={createStartIcon()}
+                  zIndexOffset={1000}
+                >
+                  <Popup>
+                    <div className="min-w-[180px]">
+                      <h3 className="font-semibold text-sm mb-1 flex items-center gap-1">
+                        🏁 Start: {route.bank.name}
+                      </h3>
+                      <p className="text-xs text-gray-600 mb-1">
+                        Pick up food items here
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {route.bank.address}
+                      </p>
+                    </div>
+                  </Popup>
+                </Marker>
+                <Marker
+                  position={route.positions[1]}
+                  icon={createEndIcon()}
+                  zIndexOffset={1000}
+                >
+                  <Popup>
+                    <div className="min-w-[180px]">
+                      <h3 className="font-semibold text-sm mb-1 flex items-center gap-1">
+                        🎯 Destination
+                      </h3>
+                      <p className="text-xs text-gray-600 mb-1">
+                        Deliver to {route.request.deliveryAddress.split(',')[0]}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {FOOD_TYPE_LABELS[route.request.foodType]} • {QUANTITY_LABELS[route.request.quantity]}
+                      </p>
+                    </div>
+                  </Popup>
+                </Marker>
+              </>
+            )}
+          </React.Fragment>
+        );
+      })}
 
       {/* Food Requests */}
       {showRequests && requests.map((request) => (
