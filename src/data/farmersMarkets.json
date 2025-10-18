@@ -1,0 +1,137 @@
+[
+  {
+    "id": "fm001",
+    "name": "Halifax Seaport Farmers Market",
+    "address": "1209 Marginal Road, Halifax, NS B3H 4P7",
+    "lat": 44.6427,
+    "lng": -63.5677,
+    "schedule": {
+      "saturday": "7:00 AM - 1:00 PM",
+      "sunday": "9:00 AM - 2:00 PM"
+    },
+    "seasonal": false,
+    "months": "Year-round",
+    "phone": "(902) 492-4043",
+    "website": "https://halifaxfarmersmarket.com",
+    "vendors": "70+ vendors selling fresh produce, baked goods, local meat, seafood, crafts",
+    "acceptsPayment": ["cash", "debit", "credit"],
+    "parkingAvailable": true,
+    "transitAccessible": true,
+    "nearestBusStop": "Marginal Rd & Lower Water St"
+  },
+  {
+    "id": "fm002",
+    "name": "Alderney Landing Farmers Market",
+    "address": "2 Alderney Drive, Dartmouth, NS B2Y 4P8",
+    "lat": 44.6659,
+    "lng": -63.5666,
+    "schedule": {
+      "saturday": "8:00 AM - 1:00 PM"
+    },
+    "seasonal": false,
+    "months": "Year-round (Saturdays only)",
+    "phone": "(902) 461-4800",
+    "website": "http://alderneymarket.com",
+    "vendors": "Local farmers, bakers, artists, and food vendors",
+    "acceptsPayment": ["cash", "debit", "credit"],
+    "parkingAvailable": true,
+    "transitAccessible": true,
+    "nearestBusStop": "Alderney Gate"
+  },
+  {
+    "id": "fm003",
+    "name": "Bedford Farmers Market",
+    "address": "65 Gary Martin Drive, Bedford, NS B4A 0J6",
+    "lat": 44.7322,
+    "lng": -63.6785,
+    "schedule": {
+      "saturday": "8:00 AM - 1:00 PM"
+    },
+    "seasonal": true,
+    "months": "May to October",
+    "phone": "(902) 489-4633",
+    "website": "http://bedfordfarmersmarket.ca",
+    "vendors": "Fresh produce, flowers, preserves, baked goods",
+    "acceptsPayment": ["cash", "debit"],
+    "parkingAvailable": true,
+    "transitAccessible": true,
+    "nearestBusStop": "Gary Martin Dr at Lions Rec Centre"
+  },
+  {
+    "id": "fm004",
+    "name": "Wolfville Farmers Market",
+    "address": "24 Elm Avenue, Wolfville, NS B4P 1J3",
+    "lat": 45.0837,
+    "lng": -64.3636,
+    "schedule": {
+      "saturday": "8:30 AM - 1:00 PM"
+    },
+    "seasonal": false,
+    "months": "Year-round",
+    "phone": "(902) 697-3344",
+    "website": "https://wolfvillefarmersmarket.ca",
+    "vendors": "Valley produce, meats, baking, preserves, crafts",
+    "acceptsPayment": ["cash", "debit", "credit"],
+    "parkingAvailable": true,
+    "transitAccessible": false,
+    "nearestBusStop": "N/A"
+  },
+  {
+    "id": "fm005",
+    "name": "Sackville Farmers Market",
+    "address": "636 Sackville Drive, Lower Sackville, NS B4C 2S3",
+    "lat": 44.7688,
+    "lng": -63.6782,
+    "schedule": {
+      "saturday": "8:00 AM - 1:00 PM"
+    },
+    "seasonal": true,
+    "months": "May to October",
+    "phone": "(902) 865-3456",
+    "website": "http://sackvillefarmersmarket.com",
+    "vendors": "Local produce, baked goods, preserves, honey",
+    "acceptsPayment": ["cash", "debit"],
+    "parkingAvailable": true,
+    "transitAccessible": true,
+    "nearestBusStop": "Sackville Dr before William St"
+  },
+  {
+    "id": "fm006",
+    "name": "Dartmouth Farmers Market",
+    "address": "45 Alderney Drive, Dartmouth, NS B2Y 2N6",
+    "lat": 44.6655,
+    "lng": -63.5669,
+    "schedule": {
+      "wednesday": "10:00 AM - 3:00 PM",
+      "saturday": "8:00 AM - 1:00 PM"
+    },
+    "seasonal": true,
+    "months": "June to October",
+    "phone": "(902) 434-6024",
+    "website": "http://dartmouthfarmersmarket.com",
+    "vendors": "Fresh vegetables, fruits, flowers, artisan products",
+    "acceptsPayment": ["cash", "debit", "credit"],
+    "parkingAvailable": true,
+    "transitAccessible": true,
+    "nearestBusStop": "Alderney Gate"
+  },
+  {
+    "id": "fm007",
+    "name": "Tantallon Farmers Market",
+    "address": "3 Bluewater Road, Tantallon, NS B3Z 1A3",
+    "lat": 44.6198,
+    "lng": -63.8442,
+    "schedule": {
+      "sunday": "10:00 AM - 2:00 PM"
+    },
+    "seasonal": true,
+    "months": "May to October",
+    "phone": "(902) 823-2233",
+    "website": "http://tantallonfarmersmarket.ca",
+    "vendors": "Organic produce, baked goods, local meats",
+    "acceptsPayment": ["cash", "debit"],
+    "parkingAvailable": true,
+    "transitAccessible": false,
+    "nearestBusStop": "Limited transit"
+  }
+]
