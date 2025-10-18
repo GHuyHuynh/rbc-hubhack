@@ -55,23 +55,23 @@ export async function fetchVehiclePositions(): Promise<BusPosition[]> {
           if (typeof vehicle.timestamp === 'number') {
             timestamp = vehicle.timestamp;
           } else if (typeof vehicle.timestamp === 'object' && 'toNumber' in vehicle.timestamp) {
-            timestamp = vehicle.timestamp.toNumber();
-          } else if (typeof vehicle.timestamp.low === 'number') {
+            timestamp = (vehicle.timestamp as any).toNumber();
+          } else if ('low' in vehicle.timestamp && typeof (vehicle.timestamp as any).low === 'number') {
             // Handle Long object from protobuf
-            timestamp = vehicle.timestamp.low;
+            timestamp = (vehicle.timestamp as any).low;
           }
         }
 
         positions.push({
           vehicleId: entity.id || vehicle.vehicle?.id || 'unknown',
           routeId: vehicle.trip?.routeId || 'unknown',
-          lat: position.latitude,
-          lng: position.longitude,
-          bearing: position.bearing,
-          speed: position.speed,
+          lat: position?.latitude ?? 0,
+          lng: position?.longitude ?? 0,
+          bearing: position?.bearing ?? undefined,
+          speed: position?.speed ?? undefined,
           timestamp: timestamp,
-          tripId: vehicle.trip?.tripId,
-          label: vehicle.vehicle?.label,
+          tripId: vehicle.trip?.tripId ?? undefined,
+          label: vehicle.vehicle?.label ?? undefined,
         });
       }
     }

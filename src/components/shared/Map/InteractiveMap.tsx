@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import type { FoodRequest, FoodBank, FarmersMarket, Hero } from '@/lib/types';
+import type { FoodRequest, FoodBank, FarmersMarket, Hero, FoodType, Quantity } from '@/lib/types';
 import { FOOD_TYPE_LABELS, QUANTITY_LABELS } from '@/lib/constants';
 import { RequestPopup } from './RequestPopup';
 import { calculateDistance } from '@/lib/utils';
@@ -380,7 +380,7 @@ export function InteractiveMap({
                         Deliver to {route.request.deliveryAddress.split(',')[0]}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {FOOD_TYPE_LABELS[route.request.foodType]} • {QUANTITY_LABELS[route.request.quantity]}
+                        {FOOD_TYPE_LABELS[route.request.foodType as FoodType]} • {QUANTITY_LABELS[route.request.quantity as Quantity]}
                       </p>
                     </div>
                   </Popup>

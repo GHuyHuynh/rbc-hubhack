@@ -72,23 +72,34 @@ export function createUser(userData: Omit<User, 'id' | 'createdAt'>): User {
     throw new Error('Email already registered');
   }
 
-  const newUser: User = {
+  const baseUser = {
     ...userData,
     id: nanoid(),
     password: hashPassword(userData.password),
     createdAt: new Date().toISOString(),
-  } as User;
+  };
+
+  let newUser: User;
 
   // Add type-specific defaults
-  if (newUser.type === 'hero') {
-    (newUser as Hero).points = 0;
-    (newUser as Hero).level = 0;
-    (newUser as Hero).badges = [];
-    (newUser as Hero).claimedCoupons = [];
-    (newUser as Hero).averageRating = 0;
-    (newUser as Hero).totalDeliveries = 0;
+  if (userData.type === 'hero') {
+    newUser = {
+      ...baseUser,
+      type: 'hero' as const,
+      transportMethod: (userData as any).transportMethod,
+      points: 0,
+      level: 0,
+      badges: [],
+      claimedCoupons: [],
+      averageRating: 0,
+      totalDeliveries: 0,
+    } as Hero;
   } else {
-    (newUser as Requester).deliveryHistory = [];
+    newUser = {
+      ...baseUser,
+      type: 'requester' as const,
+      deliveryHistory: [],
+    } as Requester;
   }
 
   users.push(newUser);
@@ -103,7 +114,7 @@ export function updateUser(id: string, updates: Partial<User>): User | null {
 
   if (index === -1) return null;
 
-  users[index] = { ...users[index], ...updates };
+  users[index] = { ...users[index], ...updates } as User;
   setStorage(STORAGE_KEYS.USERS, users);
 
   return users[index];
@@ -171,6 +182,10 @@ export function getActiveRequestsForHero(heroId: string): FoodRequest[] {
   return requests.filter(
     (r) => r.heroId === heroId && (r.status === 'accepted' || r.status === 'in_progress')
   );
+}
+
+export function getRequestsByRequesterId(requesterId: string): FoodRequest[] {
+  return getRequestsByUser(requesterId, true);
 }
 
 export function createRequest(

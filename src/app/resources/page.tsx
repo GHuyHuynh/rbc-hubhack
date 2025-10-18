@@ -245,7 +245,7 @@ export default function ResourcesPage() {
                           {Object.entries(market.schedule).map(([day, time]) => (
                             <div key={day} className="flex justify-between">
                               <span className="capitalize text-muted-foreground">{day}:</span>
-                              <span className="font-medium">{time}</span>
+                              <span className="font-medium">{time as string}</span>
                             </div>
                           ))}
                         </div>

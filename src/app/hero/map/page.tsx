@@ -13,8 +13,11 @@ import { getPendingRequests, getActiveRequestsForHero, getAllRequests } from '@/
 import { HALIFAX_CENTER } from '@/lib/constants';
 import { calculateDistance } from '@/lib/utils';
 import type { FoodRequest, FoodBank, FarmersMarket } from '@/lib/types';
-import foodBanksData from '@/data/foodBanks.json';
-import farmersMarketsData from '@/data/farmersMarkets.json';
+import foodBanksRaw from '@/data/foodBanks.json';
+import farmersMarketsRaw from '@/data/farmersMarkets.json';
+
+const foodBanksData = foodBanksRaw as FoodBank[];
+const farmersMarketsData = farmersMarketsRaw as unknown as FarmersMarket[];
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(
@@ -76,8 +79,7 @@ export default function HeroMapPage() {
   const getNearestBank = (request: FoodRequest): FoodBank | null => {
     if (!request) return null;
 
-    const banks = foodBanksData as FoodBank[];
-    const sorted = banks
+    const sorted = foodBanksData
       .map(bank => ({
         bank,
         distance: calculateDistance(bank.lat, bank.lng, request.deliveryLat, request.deliveryLng)
@@ -237,8 +239,8 @@ export default function HeroMapPage() {
             center={[HALIFAX_CENTER.lat, HALIFAX_CENTER.lng]}
             zoom={12}
             requests={requests}
-            foodBanks={foodBanksData as FoodBank[]}
-            markets={farmersMarketsData as FarmersMarket[]}
+            foodBanks={foodBanksData}
+            markets={farmersMarketsData}
             showRequests={showRequests}
             showFoodBanks={showFoodBanks}
             showMarkets={showMarkets}

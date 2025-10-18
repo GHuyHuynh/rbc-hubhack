@@ -53,10 +53,10 @@ const REQUESTER_NAV_ITEMS: NavItem[] = [
     activePattern: /^\/requester\/my-requests/,
   },
   {
-    label: 'Resources',
-    href: '/resources',
+    label: 'Map',
+    href: '/requester/map',
     icon: Map,
-    activePattern: /^\/resources/,
+    activePattern: /^\/requester\/map/,
   },
   {
     label: 'Profile',
